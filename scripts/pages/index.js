@@ -46,7 +46,14 @@ const displayMainImage = (file) => {
     `;
 
     mainImagePreview.classList.add("active");
+    // 프리뷰 이미지 선택시 파일 재선택 가능하도록
+    mainImagePreview.addEventListener("click", handlePreviewClick);
   };
 
   reader.readAsDataURL(file);
 };
+
+function handlePreviewClick(e) {
+  // 파일 선택 창 열기
+  mainImageInput.click();
+}

@@ -20,10 +20,16 @@
   max-width: 400px;
   border-radius: var(--radius-md);
   overflow: hidden;
+  cursor: pointer;
 }
 
 .image-upload__preview.active {
   display: block;
+}
+
+/* 프리뷰 활성화시 label 숨김 */
+.image-upload__preview.active ~ .image-upload__label {
+  display: none;
 }
 
 .image-upload__preview-image {
