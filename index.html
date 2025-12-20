@@ -56,6 +56,27 @@
             <div class="form-group">
               <label class="form-label">추가 이미지 (선택)</label>
               <p class="form-description">최대 4장까지 등록할 수 있어요</p>
+              <div class="image-upload image-upload--multiple">
+                <input
+                  type="file"
+                  id="additionalImages"
+                  name="additionalImages"
+                  accept=".jpg, .png"
+                  multiple
+                  class="image-upload__input"
+                />
+                <div class="image-upload__grid" id="additionalImagesGrid">
+                  <!-- 첫 번째 슬롯: 추가 버튼 -->
+
+                  <!-- 나머지 슬롯들 (JS로 채워짐) -->
+                </div>
+                <label
+                  for="additionalImages"
+                  class="image-upload__slot image-upload__slot--add"
+                >
+                  <img src="./assets/ImagePlusIcon.png" />
+                </label>
+              </div>
             </div>
           </section>
 

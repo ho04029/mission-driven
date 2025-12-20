@@ -18,7 +18,6 @@
   width: 100%;
   aspect-ratio: 1 / 1;
   max-width: 400px;
-  border-radius: var(--radius-md);
   overflow: hidden;
   cursor: pointer;
 }
@@ -36,4 +35,14 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* 추가 이미지 */
+.image-upload__slot-image {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-width: 400px;
+  overflow: hidden;
+  cursor: pointer;
 }
