@@ -52,7 +52,7 @@ const displayMainImage = (file) => {
     `;
 
     mainImagePreview.classList.add("active");
-    // 프리뷰 이미지 선택시 파일 재선택 가능하도록
+    // 프리뷰 이미지 선택시 이미지 교체
     mainImagePreview.addEventListener("click", handlePreviewClick);
   };
 
@@ -66,9 +66,37 @@ const handlePreviewClick = (e) => {
 
 // 추가 이미지 등록
 let additionalImageFiles = [];
+let currentEditingIndex = null;
+
 additionalImagesInput?.addEventListener("change", (e) => {
   const files = Array.from(e.target.files);
 
+  // 이미지 교체 모드인 경우
+  if (currentEditingIndex !== null) {
+    if (files.length !== 1) {
+      alert("이미지를 1장만 선택해주세요.");
+      additionalImagesInput.value = "";
+      return;
+    }
+
+    const file = files[0];
+    const validation = validateImage(file);
+    if (!validation.valid) {
+      alert(validation.error);
+      additionalImagesInput.value = "";
+      currentEditingIndex = null;
+      return;
+    }
+
+    // 해당 인덱스의 이미지 교체
+    additionalImageFiles[currentEditingIndex] = file;
+    currentEditingIndex = null;
+    additionalImagesInput.value = "";
+    displayAdditionalImages();
+    return;
+  }
+
+  // 새 이미지 추가
   // 현재 개수 + 새로 추가할 개수 체크
   if (additionalImageFiles.length + files.length > MAX_ADDITIONAL_IMAGES) {
     alert(`추가 이미지는 최대 ${MAX_ADDITIONAL_IMAGES}장까지 등록 가능합니다.`);
@@ -100,21 +128,63 @@ const displayAdditionalImages = () => {
   additionalImagesGrid.innerHTML = "";
 
   // 각 이미지 표시
-  additionalImageFiles.forEach((file, index) => {
-    const reader = new FileReader();
+  // 모든 이미지를 Promise 배열로 변환
+  // 이미지 순서 및 이미지 등록 버튼 순서 유지를 위해 해당 로직 추가
+  const imagePromises = additionalImageFiles.map((file, index) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
 
-    reader.onload = (e) => {
-      const slot = document.createElement("div");
-      slot.className = "image-upload__slot image-upload__slot--filled";
-      slot.innerHTML = `
-        <img src="${e.target.result}" alt="추가 이미지 ${
-        index + 1
-      }" class="image-upload__slot-image">
-      `;
+      reader.onload = (e) => {
+        const slot = document.createElement("div");
+        slot.className = "image-upload__slot image-upload__slot--filled";
+        slot.dataset.index = index;
+        slot.innerHTML = `
+          <img src="${e.target.result}" alt="추가 이미지 ${
+          index + 1
+        }" class="image-upload__slot-image">
+        `;
 
-      additionalImagesGrid.appendChild(slot);
-    };
+        // 프리뷰 이미지 선택시 이미지 교체
+        slot.addEventListener("click", (e) => {
+          handleAdditionalImageClick(index);
+        });
 
-    reader.readAsDataURL(file);
+        resolve(slot); // slot 반환
+      };
+
+      reader.readAsDataURL(file);
+    });
   });
+
+  // 모든 이미지가 로드된 후 순서대로 추가
+  Promise.all(imagePromises).then((slots) => {
+    slots.forEach((slot) => {
+      additionalImagesGrid.appendChild(slot);
+    });
+
+    // 추가 이미지 4장 미만일 때 이미지 추가 버튼이 맨 끝에 옴
+    if (additionalImageFiles.length < MAX_ADDITIONAL_IMAGES) {
+      const addButton = document.createElement("label");
+      addButton.htmlFor = "additionalImages";
+      addButton.className = "image-upload__slot image-upload__slot--add";
+      addButton.innerHTML =
+        '<img src="./assets/ImagePlusIcon.png" alt="이미지 추가" />';
+
+      additionalImagesGrid.appendChild(addButton);
+    }
+  });
+};
+
+// 프리뷰 이미지 선택시 이미지 교체
+const handleAdditionalImageClick = (index) => {
+  currentEditingIndex = index;
+
+  // multiple 속성 임시 제거 (1장만 선택하도록)
+  additionalImagesInput.removeAttribute("multiple");
+  additionalImagesInput.click();
+
+  // 선택 후 다시 multiple 속성 복원
+  setTimeout(() => {
+    additionalImagesInput.setAttribute("multiple", "");
+  }, 100);
 };
