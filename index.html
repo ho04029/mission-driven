@@ -3,7 +3,139 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>과제</title>
+    <link rel="stylesheet" href="./styles/variables.css" />
+    <link rel="stylesheet" href="./styles/common.css" />
   </head>
-  <body></body>
+  <body>
+    <div class="page-layout">
+      <!-- 헤더 (상단 고정) -->
+      <header class="page-header">
+        <h1 class="page-header__title">과제</h1>
+        <button type="submit" form="assignmentForm" class="page-header__button">
+          다음으로
+        </button>
+      </header>
+
+      <!-- 메인 컨텐츠 (스크롤 영역) -->
+      <main class="index-page-content">
+        <form id="assignmentForm" class="assignment-form">
+          <!-- 이미지 섹션 -->
+          <section class="form-section">
+            <!-- 대표 이미지 -->
+            <div class="form-group">
+              <label class="form-label">대표 이미지</label>
+              <div class="image-upload">
+                <input
+                  type="file"
+                  id="mainImage"
+                  name="mainImage"
+                  accept="image/*"
+                  required
+                  class="image-upload__input"
+                />
+                <label for="mainImage" class="image-upload__label">
+                  <p class="image-upload__text-bold">
+                    콘텐츠 대표 이미지를 등록해 주세요!
+                  </p>
+                  <p class="image-upload__text">
+                    1:1 비율의 정사각형 이미지를 추천합니다
+                  </p>
+                  <div class="image-upload__button">이미지 업로드</div>
+                </label>
+                <div class="image-upload__preview" id="mainImagePreview"></div>
+              </div>
+            </div>
+
+            <!-- 추가 이미지 -->
+            <div class="form-group">
+              <label class="form-label">추가 이미지 (선택)</label>
+              <p class="form-description">최대 4장까지 등록할 수 있어요</p>
+            </div>
+          </section>
+
+          <!-- 기타 섹션 -->
+          <section class="form-section">
+            <!-- 카테고리 -->
+            <div class="form-group">
+              <label class="form-label">카테고리</label>
+              <button
+                type="button"
+                class="category-selector__button"
+                id="categoryButton"
+              >
+                <span class="category-selector__text" id="selectedCategory">
+                  카테고리를 선택하세요
+                </span>
+                <span class="category-selector__arrow">›</span>
+              </button>
+            </div>
+            <!-- 콘텐츠 제목 -->
+            <div class="form-group">
+              <label for="title" class="form-label">콘텐츠 제목</label>
+              <div class="input-wrapper">
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  class="input-wrapper__input"
+                  placeholder="제목을 입력해주세요"
+                  required
+                  minlength="8"
+                  maxlength="80"
+                />
+                <div class="input-wrapper__footer">
+                  <span class="input-wrapper__count">
+                    <span id="titleCount">0</span>/80 (최소 8자)
+                  </span>
+                </div>
+              </div>
+            </div>
+            <!-- 활동 방식 선택 -->
+            <div class="form-group">
+              <label class="form-label">활동 방식 선택</label>
+              <p class="form-description">
+                만남을 어떤 방식으로 진행하시겠어요?
+              </p>
+              <div class="button-group">
+                <input
+                  type="radio"
+                  id="online"
+                  name="meetingType"
+                  value="online"
+                  class="button-group__input"
+                  required
+                />
+                <label for="online" class="button-group__button">온라인</label>
+
+                <input
+                  type="radio"
+                  id="offline"
+                  name="meetingType"
+                  value="offline"
+                  class="button-group__input"
+                />
+                <label for="offline" class="button-group__button"
+                  >직접 만나기</label
+                >
+              </div>
+            </div>
+            <!-- 상세 정보 (회차) -->
+            <div class="form-group">
+              <label class="form-label">상세 정보</label>
+              <div></div>
+              <button type="button" id="addSessionButton">회차 추가하기</button>
+            </div>
+          </section>
+        </form>
+      </main>
+
+      <!-- 푸터(모바일화면에서 하단 고정) -->
+      <footer class="page-footer">
+        <button type="submit" form="assignmentForm" class="page-footer__button">
+          다음으로
+        </button>
+      </footer>
+    </div>
+  </body>
 </html>
