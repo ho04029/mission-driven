@@ -1,4 +1,5 @@
 import { CategoryModal } from "../components/CategoryModal.js";
+import { TitleInput } from "../components/TitleInput.js";
 
 const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15MB
 const ALLOWED_TYPES = ["image/jpeg", "image/png"];
@@ -13,6 +14,7 @@ const categoryInput = document.getElementById("categoryInput");
 
 const additionalImagesInput = document.getElementById("additionalImages");
 const additionalImagesGrid = document.getElementById("additionalImagesGrid");
+const titleInputElement = document.getElementById("title");
 
 // 대표 이미지 등록
 let mainImageFile = null;
@@ -222,3 +224,22 @@ function updateCategoryDisplay() {
     categoryInput.value = selectedCategories.map((c) => c.id).join(",");
   }
 }
+
+// 콘텐츠 제목
+const titleInput = new TitleInput(titleInputElement, {
+  minLength: 8,
+  maxLength: 80,
+  required: true,
+});
+
+//빈 영역 클릭시 포커스 해제
+document.addEventListener("click", (e) => {
+  if (e.target.closest(".input-wrapper") || e.target.tagName === "INPUT") {
+    return;
+  }
+
+  const focusedInput = document.activeElement;
+  if (focusedInput && focusedInput.tagName === "INPUT") {
+    focusedInput.blur();
+  }
+});
