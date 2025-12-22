@@ -1,0 +1,40 @@
+.category-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.category-modal.active {
+  display: flex;
+  opacity: 1;
+}
+
+.category-modal__backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.category-modal__container {
+  position: relative;
+  background: var(--color-white);
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+  max-height: 90vh;
+}
+
+.category-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}

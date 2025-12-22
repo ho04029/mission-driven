@@ -6,7 +6,8 @@
     <title>과제</title>
     <link rel="stylesheet" href="./styles/variables.css" />
     <link rel="stylesheet" href="./styles/common.css" />
-    <link rel="stylesheet" href="./styles//pages/index.css" />
+    <link rel="stylesheet" href="./styles/pages/index.css" />
+    <link rel="stylesheet" href="./styles/components/category-modal.css" />
   </head>
   <body>
     <div class="page-layout">
@@ -91,6 +92,12 @@
                   카테고리를 선택하세요
                 </span>
                 <span class="category-selector__arrow">›</span>
+                <input
+                  type="hidden"
+                  name="category"
+                  id="categoryInput"
+                  required
+                />
               </button>
             </div>
             <!-- 콘텐츠 제목 -->

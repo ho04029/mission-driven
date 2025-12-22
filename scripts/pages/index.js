@@ -1,10 +1,15 @@
+import { CategoryModal } from "../components/CategoryModal.js";
+
 const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15MB
 const ALLOWED_TYPES = ["image/jpeg", "image/png"];
 const MAX_ADDITIONAL_IMAGES = 4;
 
 const mainImageInput = document.getElementById("mainImage");
 const mainImagePreview = document.getElementById("mainImagePreview");
-const mainImageLabel = document.getElementById("mainImageLabel");
+//const mainImageLabel = document.getElementById("mainImageLabel");
+const categoryButton = document.getElementById("categoryButton");
+const selectedCategoryText = document.getElementById("selectedCategory");
+const categoryInput = document.getElementById("categoryInput");
 
 const additionalImagesInput = document.getElementById("additionalImages");
 const additionalImagesGrid = document.getElementById("additionalImagesGrid");
@@ -188,3 +193,32 @@ const handleAdditionalImageClick = (index) => {
     additionalImagesInput.setAttribute("multiple", "");
   }, 100);
 };
+
+// 카테고리 선택
+let selectedCategories = [];
+const categoryModal = new CategoryModal();
+
+// 카테고리 버튼 클릭시 모달 오픈
+categoryButton?.addEventListener("click", () => {
+  categoryModal.open(selectedCategories);
+});
+
+// 카테고리 선택 완료
+categoryModal.setOnConfirm((categories) => {
+  selectedCategories = categories;
+  updateCategoryDisplay();
+});
+
+// 카테고리 표시 업데이트
+function updateCategoryDisplay() {
+  if (selectedCategories.length === 0) {
+    selectedCategoryText.textContent = "카테고리를 선택하세요";
+    selectedCategoryText.classList.add("placeholder");
+    categoryInput.value = "";
+  } else {
+    const names = selectedCategories.map((c) => c.name).join(", ");
+    selectedCategoryText.textContent = names;
+    selectedCategoryText.classList.remove("placeholder");
+    categoryInput.value = selectedCategories.map((c) => c.id).join(",");
+  }
+}
