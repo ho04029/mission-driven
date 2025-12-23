@@ -1,5 +1,6 @@
 import { CategoryModal } from "../components/CategoryModal.js";
 import { TitleInput } from "../components/TitleInput.js";
+import { SessionList } from "../components/SessionList.js";
 
 const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15MB
 const ALLOWED_TYPES = ["image/jpeg", "image/png"];
@@ -15,6 +16,7 @@ const categoryInput = document.getElementById("categoryInput");
 const additionalImagesInput = document.getElementById("additionalImages");
 const additionalImagesGrid = document.getElementById("additionalImagesGrid");
 const titleInputElement = document.getElementById("title");
+const $sessionList = document.getElementById("sessionList");
 
 // 대표 이미지 등록
 let mainImageFile = null;
@@ -243,3 +245,6 @@ document.addEventListener("click", (e) => {
     focusedInput.blur();
   }
 });
+
+//
+const sessionList = new SessionList($sessionList);
