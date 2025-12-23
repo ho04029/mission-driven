@@ -1,8 +1,11 @@
+import { ConfirmModal } from "./ConfirmModal.js";
+
 export class SessionList {
   constructor(containerElement) {
     this.container = containerElement;
     this.sessions = [];
     this.sessionIdCounter = 1;
+    this.confirmModal = new ConfirmModal();
 
     this.addButton = document.getElementById("addSessionButton");
 
@@ -124,22 +127,30 @@ export class SessionList {
 
     // 회차 삭제 버튼
     const removeBtn = sessionItem.querySelector(".session-item__remove");
-    removeBtn.addEventListener("click", () => this.removeSession(sessionId));
+    removeBtn.addEventListener("click", () =>
+      this.confirmRemoveSession(sessionId)
+    );
 
     return sessionItem;
   }
 
+  // 회차 삭제 버튼 클릭시 모달 오픈
+  async confirmRemoveSession(sessionId) {
+    if (this.sessions.length === 1) {
+      this.showToast("최소 1개의 회차가 필요합니다.");
+      return;
+    }
+
+    const confirmed = await this.confirmModal.open();
+
+    // 확인버튼 클릭시 회차 삭제
+    if (confirmed) {
+      this.removeSession(sessionId);
+    }
+  }
+
   // 회차 삭제
   removeSession(sessionId) {
-    if (this.sessions.length === 1) {
-      alert("최소 1개의 회차가 필요합니다.");
-      return;
-    }
-
-    if (!confirm("이 회차를 삭제하시겠습니까?")) {
-      return;
-    }
-
     this.sessions = this.sessions.filter((s) => s.id !== sessionId);
 
     const sessionElement = this.container.querySelector(
