@@ -1,5 +1,6 @@
 import { ConfirmModal } from "./ConfirmModal.js";
 import { DatePicker } from "./DatePicker.js";
+import { TimePicker } from "./TimePicker.js";
 
 export class SessionList {
   constructor(containerElement) {
@@ -8,6 +9,7 @@ export class SessionList {
     this.sessionIdCounter = 1;
     this.confirmModal = new ConfirmModal();
     this.datePicker = new DatePicker();
+    this.timePickers = new Map();
 
     this.addButton = document.getElementById("addSessionButton");
 
@@ -80,23 +82,43 @@ export class SessionList {
           <!-- 시작 시간 -->
           <div class="session-datetime__field">
             <label class="session-datetime__label">시작 시간</label>
-            <input 
-              type="time" 
-              name="session_start_time_${sessionId}"
-              class="session-datetime__input"
-              required
-            />
+            <div class="time-picker">
+              <button type="button" class="time-picker__period" data-period="AM">오전</button>
+              <input 
+                type="text" 
+                class="time-picker__input time-picker__hour"
+                maxlength="2"
+                placeholder="10"
+              >
+              <span class="time-picker__colon">:</span>
+              <input 
+                type="text" 
+                class="time-picker__input time-picker__minute"
+                maxlength="2"
+                placeholder="00"
+              >
+            </div>
           </div>
           
           <!-- 종료 시간 -->
           <div class="session-datetime__field">
             <label class="session-datetime__label">종료 시간</label>
-            <input 
-              type="time" 
-              name="session_end_time_${sessionId}"
-              class="session-datetime__input"
-              required
-            />
+            <div class="time-picker">
+              <button type="button" class="time-picker__period" data-period="AM">오전</button>
+              <input 
+                type="text" 
+                class="time-picker__input time-picker__hour"
+                maxlength="2"
+                placeholder="11"
+              >
+              <span class="time-picker__colon">:</span>
+              <input 
+                type="text" 
+                class="time-picker__input time-picker__minute"
+                maxlength="2"
+                placeholder="00"
+              >
+            </div>
           </div>
           
         </div>
@@ -136,7 +158,32 @@ export class SessionList {
       this.confirmRemoveSession(sessionId)
     );
 
+    // 시간 선택 초기화
+    this.initTimePicker(sessionId, sessionItem);
+
     return sessionItem;
+  }
+
+  // 시간 선택 초기화
+  initTimePicker(sessionId, sessionElement) {
+    const timePickers = sessionElement.querySelectorAll(".time-picker");
+    const startTimePicker = timePickers[0];
+    const endTimePicker = timePickers[1];
+
+    const startInputs = {
+      periodBtn: startTimePicker.querySelector(".time-picker__period"),
+      hourInput: startTimePicker.querySelector(".time-picker__hour"),
+      minuteInput: startTimePicker.querySelector(".time-picker__minute"),
+    };
+
+    const endInputs = {
+      periodBtn: endTimePicker.querySelector(".time-picker__period"),
+      hourInput: endTimePicker.querySelector(".time-picker__hour"),
+      minuteInput: endTimePicker.querySelector(".time-picker__minute"),
+    };
+
+    const timePicker = new TimePicker(startInputs, endInputs, sessionId);
+    this.timePickers.set(sessionId, timePicker);
   }
 
   // 달력 초기화
@@ -213,6 +260,7 @@ export class SessionList {
   // 회차 삭제
   removeSession(sessionId) {
     this.datePicker.destroy(sessionId);
+    this.timePickers.delete(sessionId);
 
     this.sessions = this.sessions.filter((s) => s.id !== sessionId);
 
