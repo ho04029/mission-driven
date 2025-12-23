@@ -125,6 +125,8 @@ export class SessionList {
     // 회차 삭제 버튼
     const removeBtn = sessionItem.querySelector(".session-item__remove");
     removeBtn.addEventListener("click", () => this.removeSession(sessionId));
+
+    return sessionItem;
   }
 
   // 회차 삭제
