@@ -1,4 +1,5 @@
 import { ConfirmModal } from "./ConfirmModal.js";
+import { DatePicker } from "./DatePicker.js";
 
 export class SessionList {
   constructor(containerElement) {
@@ -6,6 +7,7 @@ export class SessionList {
     this.sessions = [];
     this.sessionIdCounter = 1;
     this.confirmModal = new ConfirmModal();
+    this.datePicker = new DatePicker();
 
     this.addButton = document.getElementById("addSessionButton");
 
@@ -31,6 +33,8 @@ export class SessionList {
 
     const sessionElement = this.createSessionElement(sessionId, sessionNumber);
     this.container.appendChild(sessionElement);
+
+    this.initDatePicker(sessionId);
 
     // 모든 회차 제목 및 삭제 버튼 업데이트
     this.updateAllSessions();
@@ -58,16 +62,17 @@ export class SessionList {
       
       <div class="session-item__content">
         
-        <!-- 날짜/시간 그리드 -->
         <div class="session-datetime">
           
           <!-- 날짜 선택 -->
           <div class="session-datetime__field">
             <label class="session-datetime__label">날짜 선택</label>
             <input 
-              type="date" 
+              type="text" 
               name="session_date_${sessionId}"
-              class="session-datetime__input"
+              class="session-datetime__input session-date-input"
+              placeholder="날짜를 선택해주세요"
+              readonly
               required
             />
           </div>
@@ -134,6 +139,62 @@ export class SessionList {
     return sessionItem;
   }
 
+  // 달력 초기화
+  initDatePicker(sessionId) {
+    const sessionElement = this.container.querySelector(
+      `[data-session-id="${sessionId}"]`
+    );
+    const dateInput = sessionElement.querySelector(".session-date-input");
+
+    // 이전/다음 회차 날짜 범위 계산
+    const { minDate, maxDate } = this.getDateRange(sessionId);
+
+    // 달력 생성
+    this.datePicker.init(dateInput, sessionId, {
+      minDate: minDate,
+      maxDate: maxDate,
+      defaultDate: null,
+      onChange: (selectedDate, dateStr) => {
+        // 날짜 선택시 sessions 배열 업데이트
+        const session = this.sessions.find((s) => s.id === sessionId);
+        if (session) {
+          session.date = selectedDate;
+        }
+
+        // 다른 회차들의 날짜 범위 업데이트
+        this.updateAllDateRanges();
+      },
+    });
+  }
+
+  // 회차의 선택 가능한 날짜 범위 계산
+  getDateRange(sessionId) {
+    const currentIndex = this.sessions.findIndex((s) => s.id === sessionId);
+
+    let minDate = new Date(); // 기본: 오늘부터
+    let maxDate = null; // 기본: 제한 없음
+
+    // 이전 회차가 있으면, 그 날짜 다음날부터
+    if (currentIndex > 0) {
+      const prevSession = this.sessions[currentIndex - 1];
+      if (prevSession.date) {
+        minDate = new Date(prevSession.date);
+        minDate.setDate(minDate.getDate() + 1); // 다음날
+      }
+    }
+
+    // 다음 회차가 있으면, 그 날짜 전날까지
+    if (currentIndex < this.sessions.length - 1) {
+      const nextSession = this.sessions[currentIndex + 1];
+      if (nextSession.date) {
+        maxDate = new Date(nextSession.date);
+        maxDate.setDate(maxDate.getDate() - 1); // 전날
+      }
+    }
+
+    return { minDate, maxDate };
+  }
+
   // 회차 삭제 버튼 클릭시 모달 오픈
   async confirmRemoveSession(sessionId) {
     if (this.sessions.length === 1) {
@@ -151,6 +212,8 @@ export class SessionList {
 
   // 회차 삭제
   removeSession(sessionId) {
+    this.datePicker.destroy(sessionId);
+
     this.sessions = this.sessions.filter((s) => s.id !== sessionId);
 
     const sessionElement = this.container.querySelector(
@@ -162,6 +225,8 @@ export class SessionList {
 
     // 모든 회차 번호 재조정 및 업데이트
     this.updateAllSessions();
+    // 모든 회차 날짜 범위 재조정
+    this.updateAllDateRanges();
   }
 
   // 모든 회차 업데이트 (제목, 삭제 버튼)
@@ -186,6 +251,14 @@ export class SessionList {
       } else {
         removeBtn.style.display = "flex";
       }
+    });
+  }
+
+  // 모든 회차의 날짜 범위 업데이트
+  updateAllDateRanges() {
+    this.sessions.forEach((session) => {
+      const { minDate, maxDate } = this.getDateRange(session.id);
+      this.datePicker.updateRange(session.id, minDate, maxDate);
     });
   }
 }
