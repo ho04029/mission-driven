@@ -1,6 +1,7 @@
 import { ConfirmModal } from "./ConfirmModal.js";
 import { DatePicker } from "./DatePicker.js";
 import { TimePicker } from "./TimePicker.js";
+import { SessionActivityInput } from "./SessionActivityInput.js";
 
 export class SessionList {
   constructor(containerElement) {
@@ -10,6 +11,7 @@ export class SessionList {
     this.confirmModal = new ConfirmModal();
     this.datePicker = new DatePicker();
     this.timePickers = new Map();
+    this.activityInputs = new Map();
 
     this.addButton = document.getElementById("addSessionButton");
 
@@ -40,6 +42,34 @@ export class SessionList {
 
     // 모든 회차 제목 및 삭제 버튼 업데이트
     this.updateAllSessions();
+  }
+
+  // 달력 초기화
+  initDatePicker(sessionId) {
+    const sessionElement = this.container.querySelector(
+      `[data-session-id="${sessionId}"]`
+    );
+    const dateInput = sessionElement.querySelector(".session-date-input");
+
+    // 이전/다음 회차 날짜 범위 계산
+    const { minDate, maxDate } = this.getDateRange(sessionId);
+
+    // 달력 생성
+    this.datePicker.init(dateInput, sessionId, {
+      minDate: minDate,
+      maxDate: maxDate,
+      defaultDate: null,
+      onChange: (selectedDate, dateStr) => {
+        // 날짜 선택시 sessions 배열 업데이트
+        const session = this.sessions.find((s) => s.id === sessionId);
+        if (session) {
+          session.date = selectedDate;
+        }
+
+        // 다른 회차들의 날짜 범위 업데이트
+        this.updateAllDateRanges();
+      },
+    });
   }
 
   // 회차 HTML 생성
@@ -142,10 +172,11 @@ export class SessionList {
             ></textarea>
             
             <div class="session-activity__footer">
-              <span class="session-activity__counter">
-                <span class="session-activity__count">0</span>/800 (최소 8자)
+              <span class="session-activity__count">
+                <span class="session-activity__counter">0</span>/800 (최소 8자)
               </span>
             </div>
+            <p class="input-wrapper__error"></p>
           </div>
         </div>
         
@@ -160,6 +191,9 @@ export class SessionList {
 
     // 시간 선택 초기화
     this.initTimePicker(sessionId, sessionItem);
+
+    // 활동 내용 초기화
+    this.initActivityInput(sessionId, sessionItem);
 
     return sessionItem;
   }
@@ -186,32 +220,19 @@ export class SessionList {
     this.timePickers.set(sessionId, timePicker);
   }
 
-  // 달력 초기화
-  initDatePicker(sessionId) {
-    const sessionElement = this.container.querySelector(
-      `[data-session-id="${sessionId}"]`
+  // 활동 내용 초기화
+  initActivityInput(sessionId, sessionElement) {
+    const textarea = sessionElement.querySelector(
+      ".session-activity__textarea"
     );
-    const dateInput = sessionElement.querySelector(".session-date-input");
 
-    // 이전/다음 회차 날짜 범위 계산
-    const { minDate, maxDate } = this.getDateRange(sessionId);
-
-    // 달력 생성
-    this.datePicker.init(dateInput, sessionId, {
-      minDate: minDate,
-      maxDate: maxDate,
-      defaultDate: null,
-      onChange: (selectedDate, dateStr) => {
-        // 날짜 선택시 sessions 배열 업데이트
-        const session = this.sessions.find((s) => s.id === sessionId);
-        if (session) {
-          session.date = selectedDate;
-        }
-
-        // 다른 회차들의 날짜 범위 업데이트
-        this.updateAllDateRanges();
-      },
+    const activityInput = new SessionActivityInput(textarea, {
+      minLength: 8,
+      maxLength: 800,
+      required: true,
     });
+
+    this.activityInputs.set(sessionId, activityInput);
   }
 
   // 회차의 선택 가능한 날짜 범위 계산

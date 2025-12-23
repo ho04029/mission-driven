@@ -6,6 +6,7 @@ const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15MB
 const ALLOWED_TYPES = ["image/jpeg", "image/png"];
 const MAX_ADDITIONAL_IMAGES = 4;
 
+// TODO: DOM객체 가져오는 변수들은 앞에 $붙여 놓는 게 좋을 것 같음
 const mainImageInput = document.getElementById("mainImage");
 const mainImagePreview = document.getElementById("mainImagePreview");
 //const mainImageLabel = document.getElementById("mainImageLabel");
@@ -234,17 +235,5 @@ const titleInput = new TitleInput(titleInputElement, {
   required: true,
 });
 
-//빈 영역 클릭시 포커스 해제
-document.addEventListener("click", (e) => {
-  if (e.target.closest(".input-wrapper") || e.target.tagName === "INPUT") {
-    return;
-  }
-
-  const focusedInput = document.activeElement;
-  if (focusedInput && focusedInput.tagName === "INPUT") {
-    focusedInput.blur();
-  }
-});
-
-//
+// 상세 정보(회차)
 const sessionList = new SessionList($sessionList);
