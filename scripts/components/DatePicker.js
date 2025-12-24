@@ -26,6 +26,7 @@ export class DatePicker {
       minDate: minDate,
       maxDate: maxDate,
 
+      disableMobile: true, // 모바일 모드 끄기
       defaultDate: defaultDate,
       closeOnSelect: false,
       inline: false,
@@ -38,6 +39,12 @@ export class DatePicker {
 
       // 달력 오픈
       onOpen: (selectedDates, dateStr, instance) => {
+        // instance와 calendarContainer 존재 확인
+        if (!instance || !instance.calendarContainer) {
+          console.error("DatePicker: Calendar container not found");
+          return;
+        }
+
         // 이미 날짜가 선택되어 있으면 그 날짜 사용
         if (selectedDates.length > 0) {
           this.tempSelectedDate = selectedDates[0];
@@ -63,6 +70,11 @@ export class DatePicker {
 
       // 달력 닫기
       onClose: (selectedDates, dateStr, instance) => {
+        // instance와 calendarContainer 존재 확인
+        if (!instance || !instance.calendarContainer) {
+          return;
+        }
+
         this.removeConfirmButton(instance);
 
         if (this.tempSelectedDate && selectedDates.length === 0) {
@@ -77,6 +89,14 @@ export class DatePicker {
 
   // 선택 완료 버튼 추가
   addConfirmButton(instance, sessionId, onChange) {
+    // 방어 코드 추가
+    if (!instance || !instance.calendarContainer) {
+      console.error(
+        "DatePicker: Cannot add confirm button - calendar not found"
+      );
+      return;
+    }
+
     const calendar = instance.calendarContainer;
 
     // 이미 버튼이 있으면 제거
@@ -121,6 +141,11 @@ export class DatePicker {
 
   // 선택 완료 버튼 제거
   removeConfirmButton(instance) {
+    // 방어 코드 추가
+    if (!instance || !instance.calendarContainer) {
+      return;
+    }
+
     const calendar = instance.calendarContainer;
     const button = calendar.querySelector(".flatpickr-confirm-button");
     if (button) {
@@ -130,6 +155,11 @@ export class DatePicker {
 
   // 비활성화 날짜 스타일 업데이트
   updateDisabledDates(instance, minDate, maxDate) {
+    // 방어 코드 추가
+    if (!instance || !instance.calendarContainer) {
+      return;
+    }
+
     const calendar = instance.calendarContainer;
     const days = calendar.querySelectorAll(".flatpickr-day");
 
@@ -168,14 +198,24 @@ export class DatePicker {
   destroy(sessionId) {
     const picker = this.pickers.get(sessionId);
     if (picker) {
-      picker.destroy();
+      try {
+        picker.destroy();
+      } catch (error) {
+        console.error("DatePicker destroy error:", error);
+      }
       this.pickers.delete(sessionId);
     }
   }
 
   // 모든 달력 제거
   destroyAll() {
-    this.pickers.forEach((picker) => picker.destroy());
+    this.pickers.forEach((picker) => {
+      try {
+        picker.destroy();
+      } catch (error) {
+        console.error("DatePicker destroyAll error:", error);
+      }
+    });
     this.pickers.clear();
   }
 }

@@ -132,6 +132,29 @@ body {
 }
 
 /* 공통 컴포넌트 */
+/* 폼 버튼 */
+.btn--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--color-gray-400) !important;
+  pointer-events: none;
+}
+
+.btn--active {
+  opacity: 1;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.btn--active:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn--active:active {
+  transform: translateY(0);
+}
+
 /* 토스트 */
 .toast {
   position: fixed;

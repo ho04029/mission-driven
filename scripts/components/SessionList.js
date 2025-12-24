@@ -4,7 +4,7 @@ import { TimePicker } from "./TimePicker.js";
 import { SessionActivityInput } from "./SessionActivityInput.js";
 
 export class SessionList {
-  constructor(containerElement) {
+  constructor(containerElement, options = {}) {
     this.container = containerElement;
     this.sessions = [];
     this.sessionIdCounter = 1;
@@ -12,6 +12,7 @@ export class SessionList {
     this.datePicker = new DatePicker();
     this.timePickers = new Map();
     this.activityInputs = new Map();
+    this.onSessionChange = options.onSessionChange || null;
 
     this.addButton = document.getElementById("addSessionButton");
 
@@ -68,6 +69,10 @@ export class SessionList {
 
         // 다른 회차들의 날짜 범위 업데이트
         this.updateAllDateRanges();
+
+        if (this.onSessionChange) {
+          this.onSessionChange();
+        }
       },
     });
   }
@@ -217,6 +222,23 @@ export class SessionList {
     };
 
     const timePicker = new TimePicker(startInputs, endInputs, sessionId);
+
+    // 시간 변경시 콜백 호출
+    const allInputs = [
+      startInputs.hourInput,
+      startInputs.minuteInput,
+      endInputs.hourInput,
+      endInputs.minuteInput,
+    ];
+
+    allInputs.forEach((input) => {
+      input.addEventListener("input", () => {
+        if (this.onSessionChange) {
+          this.onSessionChange();
+        }
+      });
+    });
+
     this.timePickers.set(sessionId, timePicker);
   }
 
@@ -230,6 +252,19 @@ export class SessionList {
       minLength: 8,
       maxLength: 800,
       required: true,
+    });
+
+    // 시간 변경시 콜백 호출
+    textarea.addEventListener("input", () => {
+      if (this.onSessionChange) {
+        this.onSessionChange();
+      }
+    });
+
+    textarea.addEventListener("paste", () => {
+      if (this.onSessionChange) {
+        this.onSessionChange();
+      }
     });
 
     this.activityInputs.set(sessionId, activityInput);
@@ -329,5 +364,53 @@ export class SessionList {
       const { minDate, maxDate } = this.getDateRange(session.id);
       this.datePicker.updateRange(session.id, minDate, maxDate);
     });
+  }
+
+  // 모든 회차 데이터 가져오기
+  getAllSessionsData() {
+    return this.sessions
+      .map((session) => {
+        const element = this.container.querySelector(
+          `[data-session-id="${session.id}"]`
+        );
+        if (!element) return null;
+
+        const date = element.querySelector(
+          `input[name="session_date_${session.id}"]`
+        ).value;
+        const activity = element.querySelector(
+          `textarea[name="session_activity_${session.id}"]`
+        ).value;
+
+        return {
+          id: session.id,
+          number: session.number,
+          date,
+          // TODO: 시간 부분 수정
+          time: this.timePickers.get(session.id),
+          activity,
+        };
+      })
+      .filter(Boolean);
+  }
+
+  // 조용한 검증 (alert 없이)
+  validateSilent() {
+    for (let i = 0; i < this.sessions.length; i++) {
+      const session = this.sessions[i];
+
+      // 날짜 체크
+      if (!session.date) {
+        return false;
+      }
+
+      // 활동 내용 체크
+      const activityInput = this.activityInputs.get(session.id);
+      if (activityInput && !activityInput.isValid()) {
+        return false;
+      }
+    }
+
+    return true;
   }
 }

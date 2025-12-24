@@ -1,6 +1,7 @@
 import { CategoryModal } from "../components/CategoryModal.js";
 import { TitleInput } from "../components/TitleInput.js";
 import { SessionList } from "../components/SessionList.js";
+import { FormValidator } from "../components/FormValidator.js";
 
 const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15MB
 const ALLOWED_TYPES = ["image/jpeg", "image/png"];
@@ -17,7 +18,16 @@ const categoryInput = document.getElementById("categoryInput");
 const additionalImagesInput = document.getElementById("additionalImages");
 const additionalImagesGrid = document.getElementById("additionalImagesGrid");
 const titleInputElement = document.getElementById("title");
+const meetingTypeButtons = document.querySelectorAll(
+  'input[name="meetingType"]'
+);
 const $sessionList = document.getElementById("sessionList");
+
+const form = document.getElementById("assignmentForm");
+const headerButton = document.querySelector(".page-header__button");
+const footerButton = document.querySelector(".page-footer__button");
+
+const formValidator = new FormValidator(form, [headerButton, footerButton]);
 
 // 대표 이미지 등록
 let mainImageFile = null;
@@ -36,6 +46,14 @@ mainImageInput?.addEventListener("change", (e) => {
   mainImageFile = file;
   //이미지 미리보기
   displayMainImage(file);
+
+  // 이미지 선택시 전체 폼 검증
+  formValidator.validateAll();
+});
+
+// 대표 이미지 필수 검증
+formValidator.registerCustomValidator("mainImage", () => {
+  return mainImageFile !== null;
 });
 
 // 이미지 검증로직
@@ -212,6 +230,8 @@ categoryButton?.addEventListener("click", () => {
 categoryModal.setOnConfirm((categories) => {
   selectedCategories = categories;
   updateCategoryDisplay();
+  // 카테고리 선택시 전체 폼 검증
+  formValidator.validateAll();
 });
 
 // 카테고리 표시 업데이트
@@ -228,6 +248,11 @@ function updateCategoryDisplay() {
   }
 }
 
+// 카테고리 필수 검증
+formValidator.registerCustomValidator("category", () => {
+  return selectedCategories.length > 0;
+});
+
 // 콘텐츠 제목
 const titleInput = new TitleInput(titleInputElement, {
   minLength: 8,
@@ -235,5 +260,85 @@ const titleInput = new TitleInput(titleInputElement, {
   required: true,
 });
 
+formValidator.registerValidator("title", titleInput);
+
+// 활동 방식
+let selectedMeetingType = null;
+meetingTypeButtons.forEach((button) => {
+  button.addEventListener("change", (e) => {
+    selectedMeetingType = e.target.value;
+    formValidator.validateAll();
+  });
+});
+
+// 활동 방식 필수 검증
+formValidator.registerCustomValidator("meetingType", () => {
+  return selectedMeetingType !== null;
+});
+
 // 상세 정보(회차)
-const sessionList = new SessionList($sessionList);
+const sessionList = new SessionList($sessionList, {
+  onSessionChange: () => {
+    formValidator.validateAll();
+  },
+});
+
+// 상세 정보(회차) 필수 검증
+formValidator.registerCustomValidator("sessions", () => {
+  return sessionList.validateSilent();
+});
+
+// 폼제출
+form?.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  if (!validateForm()) {
+    return;
+  }
+
+  const formData = {
+    mainImage: mainImageFile,
+    additionalImages: additionalImageFiles, // 선택사항
+    categories: selectedCategories,
+    title: titleInput.getValue(),
+    meetingType: selectedMeetingType,
+    sessions: sessionList.getAllSessionsData(),
+  };
+
+  console.log("제출 데이터:", formData);
+  alert("제출되었습니다!");
+});
+
+// 폼 검증
+function validateForm() {
+  let isValid = true;
+
+  if (!mainImageFile) {
+    alert("대표 이미지를 선택해주세요.");
+    return false;
+  }
+
+  if (selectedCategories.length === 0) {
+    alert("카테고리를 선택해주세요.");
+    return false;
+  }
+
+  if (!titleInput.isValid()) {
+    alert("콘텐츠 제목을 8자 이상 입력해주세요.");
+    return false;
+  }
+
+  if (!selectedMeetingType) {
+    alert("활동 방식을 선택해주세요.");
+    return false;
+  }
+
+  if (!sessionList.validateSilent()) {
+    return false;
+  }
+
+  return isValid;
+}
+
+// 초기 검증
+formValidator.validateAll();
