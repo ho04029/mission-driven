@@ -196,7 +196,7 @@ export class TextInputValidator {
     return this.element.value.trim();
   }
 
-  isValid() {
+  validateUI() {
     return this.validate(this.element.value);
   }
 
@@ -214,5 +214,23 @@ export class TextInputValidator {
       "input-wrapper--valid",
       "session-activity__wrapper--valid"
     );
+  }
+
+  isValid() {
+    const value = this.element.value;
+    const trimmedLength = value.trim().length;
+
+    // required 체크
+    if (this.required && trimmedLength === 0) {
+      return false;
+    }
+
+    // 최소 길이 체크
+    if (trimmedLength > 0 && trimmedLength < this.minLength) {
+      return false;
+    }
+
+    // 최대 길이는 입력 단계에서 이미 보장됨
+    return true;
   }
 }
