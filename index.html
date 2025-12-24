@@ -102,7 +102,9 @@
                 <span class="category-selector__text" id="selectedCategory">
                   카테고리를 선택하세요
                 </span>
-                <span class="category-selector__arrow">›</span>
+                <span class="category-selector__arrow"
+                  ><img src="./assets/RightArrow.png"
+                /></span>
                 <input
                   type="hidden"
                   name="category"
@@ -115,20 +117,23 @@
             <div class="form-group">
               <label for="title" class="form-label">콘텐츠 제목</label>
               <div class="input-wrapper">
-                <input
-                  type="text"
-                  id="title"
-                  name="title"
-                  class="input-wrapper__input"
-                  placeholder="제목을 입력해주세요"
-                  required
-                  minlength="8"
-                  maxlength="80"
-                />
-                <div class="input-wrapper__footer">
-                  <span class="input-wrapper__count">
-                    <span class="input-wrapper__counter">0</span>/80 (최소 8자)
-                  </span>
+                <div class="input-wrapper__wrapper">
+                  <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    class="input-wrapper__input"
+                    placeholder="제목을 입력해주세요"
+                    required
+                    minlength="8"
+                    maxlength="80"
+                  />
+                  <div class="input-wrapper__footer">
+                    <span class="input-wrapper__count">
+                      <span class="input-wrapper__counter">0</span>/80 (최소
+                      8자)
+                    </span>
+                  </div>
                 </div>
                 <p class="input-wrapper__error"></p>
               </div>
