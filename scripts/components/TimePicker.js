@@ -72,7 +72,7 @@ export class TimePicker {
     // 시 단위 blur
     [this.startHourInput, this.endHourInput].forEach((input) => {
       input.addEventListener("blur", () => {
-        this.normalizeInput(input, 0, 12);
+        this.normalizeInput(input, 1, 12);
       });
     });
 
@@ -80,6 +80,31 @@ export class TimePicker {
     [this.startMinuteInput, this.endMinuteInput].forEach((input) => {
       input.addEventListener("blur", () => {
         this.normalizeInput(input, 0, 59);
+      });
+    });
+
+    [this.startHourInput, this.startMinuteInput].forEach((input) => {
+      input.addEventListener("blur", () => {
+        const startHour = parseInt(this.startHourInput.value) || 10;
+        const startMinute = parseInt(this.startMinuteInput.value) || 0;
+        const startPeriod = this.startPeriodBtn.dataset.period;
+
+        const start24Hour = this.to24HourFormat(startPeriod, startHour);
+        const startTotalMinutes = start24Hour * 60 + startMinute;
+
+        let endTotalMinutes = startTotalMinutes + 60;
+
+        if (endTotalMinutes >= 1440) {
+          endTotalMinutes = 1439; // 23:59
+        }
+
+        const endHour24 = Math.floor(endTotalMinutes / 60);
+        const endMinute = endTotalMinutes % 60;
+
+        const { period: endPeriod, hour: endHour12 } =
+          this.to12HourFormat(endHour24);
+
+        this.setTime("end", endPeriod, endHour12, endMinute);
       });
     });
   }
@@ -261,5 +286,33 @@ export class TimePicker {
     const minute = hour24 % 60;
 
     return `${this.padZero(hour)}:${this.padZero(minute)}`;
+  }
+
+  to24HourFormat(period, hour12) {
+    let hour24 = hour12;
+
+    if (period === "PM" && hour12 !== 12) {
+      hour24 = hour12 + 12;
+    } else if (period === "AM" && hour12 === 12) {
+      hour24 = 0;
+    }
+
+    return hour24;
+  }
+
+  to12HourFormat(hour24) {
+    let period = "AM";
+    let hour12 = hour24;
+
+    if (hour24 >= 12) {
+      period = "PM";
+      if (hour24 > 12) {
+        hour12 = hour24 - 12;
+      }
+    } else if (hour24 === 0) {
+      hour12 = 12;
+    }
+
+    return { period, hour: hour12 };
   }
 }
