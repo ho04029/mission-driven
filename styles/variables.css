@@ -15,4 +15,15 @@
 
   --color-error: #e82929;
 
+  --font-size-2l: 28px;
+  --font-size-xl: 24px;
+  --font-size-lg: 22px;
+  --font-size-md: 20px;
+  --font-size-sm: 18px;
+  --font-size-xs: 16px;
+
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
 }

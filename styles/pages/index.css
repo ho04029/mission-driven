@@ -1,3 +1,52 @@
+/* 전체 레이아웃 */
+.page-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 헤더 */
+.page-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid var(--color-gray-400);
+  background: var(--color-white);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px;
+}
+
+.page-header__title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.page-header__button {
+  display: none;
+}
+
+/* form-group 공통 */
+.form-group {
+  padding: 40px 16px 0px 16px;
+}
+
+.form-label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: 12px;
+}
+
+.form-description {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-500);
+  font-weight: var(--font-weight-medium);
+}
+
 /* 대표 이미지 */
 .image-upload {
   position: relative;
@@ -70,13 +119,37 @@
   cursor: pointer;
 }
 
+/* 푸터 */
+.page-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  background: var(--color-white);
+  border-top: 1px solid var(--color-gray-400);
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.page-footer__button {
+  width: 100%;
+}
+
 /* 반응형 */
 @media (min-width: 767px) {
+  /* 헤더 */
+  .page-header__button {
+    display: block;
+  }
+
   /* 추가 이미지 */
   .image-upload__grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: var(--spacing-md);
     max-width: 440px;
+  }
+
+  /* 푸터 */
+  .page-footer {
+    display: none;
   }
 }
