@@ -215,7 +215,48 @@
   border: none;
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
+  height: 80px;
 }
+
+/* 활동 방식 */
+.button-group {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.button-group__input {
+  display: none;
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.button-group__button {
+  width: 100%;
+  min-height: 47px;
+  background: var(--color-gray-100);
+  border: 1px solid var(--color-gray-200);
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.button-group__button:hover {
+  background: var(--color-gray-200);
+  border-color: var(--color-gray-350);
+}
+
+.button-group__input:checked + .button-group__button {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+/* 상세 정보(회차 정보) */
 
 /* 푸터 */
 .page-footer {
