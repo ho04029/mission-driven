@@ -117,7 +117,7 @@ export class SessionList {
           <!-- 시작 시간 -->
           <div class="session-datetime__field">
             <label class="session-datetime__label">시작 시간</label>
-            <div class="time-picker">
+            <div class="time-picker session-datetime__input">
               <button type="button" class="time-picker__period" data-period="AM">오전</button>
               <input 
                 type="text" 
@@ -138,7 +138,7 @@ export class SessionList {
           <!-- 종료 시간 -->
           <div class="session-datetime__field">
             <label class="session-datetime__label">종료 시간</label>
-            <div class="time-picker">
+            <div class="time-picker session-datetime__input">
               <button type="button" class="time-picker__period" data-period="AM">오전</button>
               <input 
                 type="text" 
@@ -166,20 +166,22 @@ export class SessionList {
           </p>
           
           <div class="session-activity__wrapper">
-            <textarea 
-              name="session_activity_${sessionId}"
-              class="session-activity__textarea"
-              placeholder="활동 내용을 간단히 입력해주세요"
-              rows="4"
-              minlength="8"
-              maxlength="800"
-              required
-            ></textarea>
-            
-            <div class="session-activity__footer">
-              <span class="session-activity__count">
-                <span class="session-activity__counter">0</span>/800 (최소 8자)
-              </span>
+            <div class="session-activity__textarea-wrapper input-wrapper__wrapper">
+              <textarea 
+                name="session_activity_${sessionId}"
+                class="session-activity__textarea"
+                placeholder="활동 내용을 간단히 입력해주세요"
+                rows="4"
+                minlength="8"
+                maxlength="800"
+                required
+              ></textarea>
+              
+              <div class="session-activity__footer">
+                <span class="session-activity__count">
+                  <span class="session-activity__counter">0</span>/800 (최소 8자)
+                </span>
+              </div>
             </div>
             <p class="input-wrapper__error"></p>
           </div>

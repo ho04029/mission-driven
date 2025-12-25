@@ -25,19 +25,20 @@ export class CategoryModal {
       <div class="category-modal__container">
         <header class="category-modal__header">
           <button class="category-modal__close" type="button">
-            <span>×</span>
+            <span>나가기</span>
           </button>
-          <h2 class="category-modal__title">카테고리 선택</h2>
+          <h2 class="category-modal__title">카테고리</h2>
           <div class="category-modal__spacer"></div>
         </header>
         
         <div class="category-modal__content">
-          <p class="category-modal__description">최대 2개까지 선택할 수 있어요</p>
+          <p class="category-modal__content-header">어떤 카테고리의 <br/> 콘텐츠를 만드시나요?</p>
+          <p class="category-modal__content-description">최대 2개까지 선택가능합니다.</p>
           <div class="category-list" id="categoryList"></div>
         </div>
         
         <footer class="category-modal__footer">
-          <button class="btn btn--primary" id="categoryConfirm" type="button" disabled>
+          <button class="btn category-modal__button" id="categoryConfirm" type="button" disabled>
             다음으로
           </button>
         </footer>
@@ -109,9 +110,11 @@ export class CategoryModal {
     if (this.selectedCategories.length > 0) {
       confirmBtn.disabled = false;
       confirmBtn.classList.remove("btn--disabled");
+      confirmBtn.classList.add("btn--active");
     } else {
       confirmBtn.disabled = true;
       confirmBtn.classList.add("btn--disabled");
+      confirmBtn.classList.remove("btn--active");
     }
   }
 

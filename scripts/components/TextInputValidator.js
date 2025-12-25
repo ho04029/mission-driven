@@ -10,6 +10,7 @@ export class TextInputValidator {
     this.wrapper =
       this.element.closest(".input-wrapper") ||
       this.element.closest(".session-activity__wrapper");
+    this.inputWrapper = this.element.closest(".input-wrapper__wrapper");
     this.counter = this.wrapper?.querySelector('[class*="__counter"]');
     this.errorMessage = this.wrapper?.querySelector('[class*="__error"]');
 
@@ -115,6 +116,11 @@ export class TextInputValidator {
 
     // blur시에도 유효성 검사 유지
     this.validate(this.element.value);
+
+    this.inputWrapper.classList.remove(
+      "input-wrapper--valid",
+      "session-activity__wrapper--valid"
+    );
   }
 
   // 글자 수 업데이트
@@ -139,7 +145,7 @@ export class TextInputValidator {
     }
 
     // 유효함
-    this.wrapper.classList.add(
+    this.inputWrapper.classList.add(
       "input-wrapper--valid",
       "session-activity__wrapper--valid"
     );
@@ -148,11 +154,11 @@ export class TextInputValidator {
 
   // 에러 표시
   setError(message) {
-    this.wrapper.classList.add(
+    this.inputWrapper.classList.add(
       "input-wrapper--error",
       "session-activity__wrapper--error"
     );
-    this.wrapper.classList.remove(
+    this.inputWrapper.classList.remove(
       "input-wrapper--valid",
       "session-activity__wrapper--valid"
     );
@@ -165,7 +171,7 @@ export class TextInputValidator {
 
   // 에러 상태 초기화
   clearError() {
-    this.wrapper.classList.remove(
+    this.inputWrapper.classList.remove(
       "input-wrapper--error",
       "session-activity__wrapper--error"
     );
@@ -210,7 +216,7 @@ export class TextInputValidator {
     this.element.value = "";
     this.updateCounter(0);
     this.clearError();
-    this.wrapper.classList.remove(
+    this.inputWrapper.classList.remove(
       "input-wrapper--valid",
       "session-activity__wrapper--valid"
     );

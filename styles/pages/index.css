@@ -66,6 +66,13 @@
   font-weight: var(--font-weight-medium);
 }
 
+.input-wrapper__error {
+  margin-top: 4px;
+  color: var(--color-error);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
 /* 대표 이미지 */
 .image-upload {
   position: relative;
@@ -216,6 +223,13 @@
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
   height: 80px;
+  width: 100%;
+}
+
+.input-wrapper__footer {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
 }
 
 /* 활동 방식 */
@@ -257,6 +271,118 @@
 }
 
 /* 상세 정보(회차 정보) */
+.session-list {
+  width: calc(100% - 32px);
+}
+
+.session-item {
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-gray-100);
+  width: 100%;
+}
+
+.session-item__header {
+  margin-bottom: 16px;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.session-datetime {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.session-datetime__field {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.session-datetime__label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.session-datetime__input {
+  width: 222px;
+  height: 52px;
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.time-picker__period {
+  background: var(--color-gray-100);
+  border: 1px solid var(--color-gray-200);
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.time-picker__input {
+  max-width: 76px;
+  border: none;
+  text-align: center;
+}
+
+.session-activity__label {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+}
+
+.session-activity__description {
+  margin-top: 8px;
+  margin-bottom: 12px;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-gray-500);
+}
+
+.session-activity__textarea-wrapper {
+  background: var(--color-white);
+  padding: 12px 16px;
+}
+
+.session-activity__textarea {
+  border: none;
+  width: 100%;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.session-activity__footer {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.session-list__btn-area {
+  margin-top: 24px;
+  width: 100%;
+  margin-bottom: 160px;
+}
+
+#addSessionButton {
+  width: 100%;
+  height: 48px;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  background: var(--color-black);
+  color: var(--color-white);
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 /* 푸터 */
 .page-footer {
@@ -266,17 +392,38 @@
   background: var(--color-white);
   border-top: 1px solid var(--color-gray-400);
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+  width: calc(100% - 32px);
+  padding: 8px 16px 16px;
 }
 
 .page-footer__button {
   width: 100%;
+  height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* 반응형 */
 @media (min-width: 767px) {
   /* 헤더 */
+  .page-header {
+    justify-content: space-between;
+  }
+  .page-header__title {
+    margin-left: 50%;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+  }
   .page-header__button {
-    display: block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 120px;
+    height: 38px;
+    border-radius: 4px;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
   }
 
   /* 메인 컨텐츠 */
